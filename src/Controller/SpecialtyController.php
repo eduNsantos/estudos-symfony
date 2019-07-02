@@ -5,43 +5,42 @@ namespace App\Controller;
 use App\Entity\Specialty;
 use App\Traits\CRUDTrait;
 use App\Form\SpecialtyType;
-use App\Interfaces\CRUDInterface;
-use App\Controller\Abstraction\AbstractCRUD;
+use App\Traits\ClassDefinitionTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SpecialtyController extends AbstractCRUD
+class SpecialtyController extends AbstractController
 {
-    protected $entityClass = Specialty::class;
+    use ClassDefinitionTrait;
+
     /**
      * @Route("/specialty", name="specialty")
      */
     public function index(Request $request)
     {
-        $specialty = new Specialty;
+        $t = $this->getEntityClass();
 
-        $form = $this->createForm(SpecialtyType::class, $specialty);
+        $t = new $t;
+
+        $form = $this->createForm('App\Form\\SpecialtyType', $t);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $specialty = $form->getData();
+            $t = $form->getData();
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($specialty);
+            $entityManager->persist($t);
             $entityManager->flush();
 
             $this->addFlash('success', 'Categoria cadastrada com sucesso!');
         }
 
-        return $this->render('specialty/index.html.twig', [
+        return $this->render($this->getEntityName() . '/index.html.twig', [
             'form' => $form->createView(),
-            'items' => $this->getFieldNames()
+            'fieldNames' => $this->getFieldNames(),
+            'items' => $this->getData()
         ]);
-    }
-
-    public function setEntityClass($name)
-    {
-        $this->entityClass = $name;
     }
 }

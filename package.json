@@ -18,5 +18,10 @@
         "bootstrap": "^4.3.1",
         "jquery": "^3.4.1",
         "popper.js": "^1.15.0"
-    }
+    },
+    "name": "estudos-symfony",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/eduNsantos/estudos-symfony",
+    "author": "<edu.nascimento22@outlook.com>"
 }

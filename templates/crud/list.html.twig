@@ -16,19 +16,11 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    {% for fieldName in fieldNames %}
-                        <th>{{ fieldName | trans }}</th>
+                    {% for item in items %}
+                        <td>{{ item | trans }}</td>
                     {% endfor %}
                 </tr>
             </thead>
-            <tbody>
-                {% for item in items %}
-                    <tr>
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.name }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
         </table>
     </div>
 </div>
