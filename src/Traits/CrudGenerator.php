@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait ClassDefinitionTrait
+trait CrudGenerator
 {
     public $entityClass;
     public $entityName;
@@ -66,4 +66,8 @@ trait ClassDefinitionTrait
         return $em->findAll();
     }
 
+    public function getFormClass()
+    {
+        return 'App\Form\\' . $this->getEntityName() . 'Type'; 
+    }
 }
