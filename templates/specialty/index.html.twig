@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SpecialtyController!{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {{ form(form) }}
+
+    <div class="table-responsive my-3">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for item in items %}
+                        <th>{{ item }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+{% endblock %}
