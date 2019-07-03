@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Exception;
+
 trait CrudGenerator
 {
     public $entityClass;
