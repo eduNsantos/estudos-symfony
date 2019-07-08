@@ -3,13 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Specialty;
-use App\Form\SpecialtyType;
 use App\Traits\CrudGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SpecialtyController extends AbstractController
 {
@@ -18,29 +19,51 @@ class SpecialtyController extends AbstractController
     /**
      * @Route("/specialty", name="specialty")
      */
-    public function index(Request $request, TranslatorInterface $transalator)
+    public function index(Request $request, ValidatorInterface $validator, TranslatorInterface $translator)
     {
-        $object = $this->getEntityClass();
-        $object = new $object;
+        $entityClass = $this->getEntityClass();
+        $entity = new $entityClass;
 
-        $form = $this->createForm($this->getFormClass(), $object);
+        $form = $this->createForm($this->getFormClass());
         
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $object = $form->getData();
-
+        if ($form->isSubmitted()) {
+            $entity = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($object);
-            $entityManager->flush();
+            $specialties = explode(',', $entity->getName());
+            
+            foreach ($specialties as $specialty) {
+                $entityObj = new $entityClass;
+                $entityObj->setName($specialty);
+                $entityManager->persist($entityObj);
 
-            $this->addFlash('success', $transalator->trans($this->getEntityName()) . ' cadastrada(o) com sucesso!');
+                $error = $validator->validate($entityObj);
+                if (count($error)) {
+                    return $this->json($error);
+                    // dd($error[0]->getMessageTemplate(), $error);
+                }
+            }   
+
+            if (isset($errors)) {
+                return $this->json(array_merge([
+                    'data' => $errors,
+                    'entityName' => $this->getEntityName()
+                ]), 400);
+            } 
+
+            $entityManager->flush();
+            
+            return $this->json(array_merge([
+                'entityName' => $translator->trans($this->getEntityName()),
+                'data' => $this->getTableData(true)
+            ]), 200);
         }
+
 
         return $this->render($this->getEntityName() . '/index.html.twig', [
             'form' => $form->createView(),
-            'fieldNames' => $this->getFieldNames(),
-            'items' => $this->getData()
+            'table' => $this->getTableData(true)
         ]);
     }
 }
