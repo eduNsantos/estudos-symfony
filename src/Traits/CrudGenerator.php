@@ -2,13 +2,14 @@
 
 namespace App\Traits;
 
-use Exception;
+use Symfony\Component\Translation\TranslatorInterface;
 
 trait CrudGenerator
 {
-    public $entityClass;
-    public $entityName;
-    public $fieldNames;
+    private $entityClass;
+    private $entityName;
+    private $fieldNames;
+    private $translatedEntityName;
 
     function __construct()
     { 
@@ -54,6 +55,11 @@ trait CrudGenerator
         $this->entityName = $name;
     }
     
+    public function getTranslatedEntityName(TranslatorInterface $translator)
+    {
+        $this->translatedEntityName = $translator->trans($this->getEntityName);
+    }
+    
     /**
      * Get the value of entityClass
      */ 
@@ -62,14 +68,37 @@ trait CrudGenerator
         return $this->entityClass;
     }
 
-    public function getData()
+    /**
+     * getTableData
+     *
+     * @param  bool $table if true will return de view table
+     *
+     * @return void
+     */
+    public function getTableData(bool $table = false)
     {
         $em = $this->getDoctrine()->getRepository($this->getEntityClass());
-        return $em->findAll();
+        if (!$table) {
+            return [    
+                'fieldNames' => $this->getFieldNames(),
+                'items' =>  $em->findAll()
+            ];
+        }
+
+        return $this->render('crud/table.html.twig', [
+            'fieldNames' => $this->getFieldNames(),
+            'items' =>  $em->findAll()
+        ])->getContent();
     }
 
     public function getFormClass()
     {
         return 'App\Form\\' . $this->getEntityName() . 'Type'; 
     }
+
+    public function getFormErrors()
+    {
+
+    }
+
 }
