@@ -17,7 +17,9 @@
     "dependencies": {
         "bootstrap": "^4.3.1",
         "jquery": "^3.4.1",
-        "popper.js": "^1.15.0"
+        "popper.js": "^1.15.0",
+        "sweetalert": "^2.1.2",
+        "sweetalert2": "^8.13.1"
     },
     "name": "estudos-symfony",
     "version": "1.0.0",

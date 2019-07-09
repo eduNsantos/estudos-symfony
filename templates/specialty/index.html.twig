@@ -11,32 +11,10 @@
         </div>
     {% endfor %}
     {{ form(form) }}
-
-    <div class="table-responsive my-3">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    {% for fieldName in fieldNames %}
-                        <th>{{ fieldName | trans }}</th>
-                    {% endfor %}
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                    <tr>
-                        {% for fieldName in fieldNames %}
-                            <td>{{ attribute(item, fieldName) }}</td>
-                        {% endfor %}
-                        <td>
-                            <button class="btn btn-danger">
-                                Excluir
-                            </button>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div id="table-list">
+        {% autoescape 'html' %}
+            {{ table | raw }}
+        {% endautoescape %}
     </div>
 </div>
 {% endblock %}

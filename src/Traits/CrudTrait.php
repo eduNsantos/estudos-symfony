@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Symfony\Component\Translation\TranslatorInterface;
 
-trait CrudGenerator
+trait CrudTrait
 {
     private $entityClass;
     private $entityName;
@@ -89,16 +89,6 @@ trait CrudGenerator
             'fieldNames' => $this->getFieldNames(),
             'items' =>  $em->findAll()
         ])->getContent();
-    }
-
-    public function getFormClass()
-    {
-        return 'App\Form\\' . $this->getEntityName() . 'Type'; 
-    }
-
-    public function getFormErrors()
-    {
-
     }
 
 }

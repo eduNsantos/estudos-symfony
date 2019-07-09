@@ -4,22 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Specialty;
 use App\Traits\CrudGenerator;
+use App\Controller\AbstractCrudController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
-class SpecialtyController extends AbstractController
+class SpecialtyController extends AbstractCrudController
 {
-    use CrudGenerator;
-
     /**
      * @Route("/specialty", name="specialty")
      */
-    public function index(Request $request, ValidatorInterface $validator, TranslatorInterface $translator)
+    public function index(Request $request, TranslatorInterface $translator, ValidatorInterface $validator)
     {
         $entityClass = $this->getEntityClass();
         $entity = new $entityClass;
@@ -31,6 +28,7 @@ class SpecialtyController extends AbstractController
         if ($form->isSubmitted()) {
             $entity = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
+            
             $specialties = explode(',', $entity->getName());
             
             foreach ($specialties as $specialty) {
@@ -38,12 +36,10 @@ class SpecialtyController extends AbstractController
                 $entityObj->setName($specialty);
                 $entityManager->persist($entityObj);
 
-                $error = $validator->validate($entityObj);
-                if (count($error)) {
-                    return $this->json($error);
-                    // dd($error[0]->getMessageTemplate(), $error);
-                }
+                $this->validateForm($validator, $entityObj);
             }   
+
+            $this->checkFormErrors();
 
             if (isset($errors)) {
                 return $this->json(array_merge([

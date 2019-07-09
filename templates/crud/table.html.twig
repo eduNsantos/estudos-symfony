@@ -1,0 +1,27 @@
+
+<div class="table-responsive my-3">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {% for fieldName in fieldNames %}
+                    <th>{{ fieldName | trans }}</th>
+                {% endfor %}
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    {% for fieldName in fieldNames %}
+                        <td class="{{ fieldName }}">{{ attribute(item, fieldName) }}</td>
+                    {% endfor %}
+                    <td class="table-actions">
+                        <button class="btn btn-danger" onclick="deleteItem({{ item.id }})">
+                            Excluir
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
