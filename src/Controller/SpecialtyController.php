@@ -3,16 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Specialty;
-use App\Traits\CrudGenerator;
-use App\Controller\AbstractCrudController;
+use App\Traits\CrudTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SpecialtyController extends AbstractCrudController
+class SpecialtyController extends AbstractController
 {
+    use CrudTrait;
+    use FormTrait;
     /**
      * @Route("/specialty", name="specialty")
      */
